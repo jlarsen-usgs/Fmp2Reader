@@ -5,7 +5,7 @@ __version__ = "0.1"
 Utility to read in FMP files from modflow OWHM 2.
 import into your own script as:
 
->>> from farm_processes import Fmp
+>>> from fmp2reader import Fmp
 >>>
 >>> # Read in fmp data and set to Fmp as an overridden dictionary
 >>> fmp = Fmp('lucerne.fmp', fmp_ws=r"C:/mydirectory", nrow=50, ncol=64,
