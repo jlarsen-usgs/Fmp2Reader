@@ -11,7 +11,7 @@ to install fmp2reader as a python library
 
 fmp2reader can then be imported to a python script using
 
-```
+```python
 from fmp2reader import Fmp
 from fmp2reader import create_shapefile_from_array
 from fmp2reader import create_shapefile_from_transient_array
