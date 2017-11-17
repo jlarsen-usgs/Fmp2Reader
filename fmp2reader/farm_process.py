@@ -522,7 +522,7 @@ class Fmp(dict):
 
         t = self['wbs']['location']['data']
         t.shape = (t.shape[0], 1, t.shape[1], t.shape[2])
-        self.transient_arrays['location'] = t  # self['wbs']['location']['data']
+        self.transient_arrays['location'] = t
 
         for key, item in self.items():
             if key in ('soil', 'climate', 'crop',
