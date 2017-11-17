@@ -112,7 +112,8 @@ class Fmp(dict):
         load: (bool) True is to load a fmp file, False for future capability
             which is not implemented. False is where a user should be able to
             build a new fmp instance using external data
-        cell_area: (float) optional. Used to calculate crop area arrays
+        cell_area: (float or np.ndarray) optional. Used to calculate crop area arrays
+            numpy array of cell_area must be the shape (nrow, ncol)
         crop_lut: (dict) optional. LUT of crop types tied to crop number. Used
             in creation of crop arrays.
     """
@@ -163,7 +164,19 @@ class Fmp(dict):
         self.boundary_arrays = {}
         self.crop_arrays = {}
         self.crop_areas = {}
-        self.cell_area = cell_area
+
+        if isinstance(cell_area, np.ndarray):
+            if cell_area.shape == (self.nrow, self.ncol):
+                self.cell_area = cell_area
+            else:
+               raise AssertionError("cell area array must be the same "
+                                    "shape as nrow, ncol or a scalar")
+            pass
+        else:
+            if cell_area is None:
+                self.cell_area = None
+            else:
+                self.cell_area = np.ones((self.nrow, self.ncol)) * cell_area
 
         if load:
             self.__block_indexes = {}
@@ -536,7 +549,7 @@ class Fmp(dict):
                                             arr[per] = np.array([krec[key - 1]])
 
                                         if self.cell_area is not None:
-                                            area_arr = arr * self.cell_area
+                                            area_arr = arr * np.array([self.cell_area])
                                             self.crop_areas[crop] = area_arr
 
                                         self.crop_arrays[crop] = arr
@@ -601,6 +614,8 @@ class Fmp(dict):
 
 
 if __name__ == "__main__":
+
+
     import flopy as fp
 
     crop_lut = {1: 'alfalfa', 2:'apples', 3: "grain",
@@ -630,7 +645,7 @@ if __name__ == "__main__":
     fmp = Fmp(fmp_name, fmp_ws=ws, nrow=dis.nrow,
               ncol=dis.ncol, cell_area=area, crop_lut=crop_lut)
     fmp.to_arrays()
-
+    print('break')
 
     ws = r'C:\Users\jlarsen\Desktop\Lucerne\GIS\V2_NAD83'
     shp_name = "Crop_arrays.shp"
