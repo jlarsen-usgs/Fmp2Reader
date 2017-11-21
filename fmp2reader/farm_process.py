@@ -331,6 +331,8 @@ class Fmp(dict):
                         data, skip = self.__internal_reader(ix, block_data, key)
                         if data is not None:
                             dtype = "{} {}".format(t[1].lower(), t[2].lower())
+                        else:
+                            dtype = None
 
                     elif t[1].lower() == "open/close":
                         data = self.__array_reader(t[-1])
