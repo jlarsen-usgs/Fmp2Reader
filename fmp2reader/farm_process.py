@@ -320,8 +320,7 @@ class Fmp(dict):
                                 dtype = "static list"
 
                         else:
-                            # todo: implement a static array instance maybe?
-                            pass
+                            data = self.__array_reader(t[-1])
 
                     elif t[1].lower() == "constant":
                         data = float(t[-1])
