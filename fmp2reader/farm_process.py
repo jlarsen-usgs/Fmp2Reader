@@ -544,7 +544,10 @@ class Fmp(dict):
         # self.boundary_arrays['soil_id'] = self['soil']['soil_id']['data']
 
         t = self['wbs']['location']['data']
-        t.shape = (t.shape[0], 1, t.shape[1], t.shape[2])
+        try:
+            t.shape = (t.shape[0], 1, t.shape[1], t.shape[2])
+        except IndexError:
+            t.shape = (1, 1, t.shape[0], t.shape[1])
         self.transient_arrays['location'] = t
 
         for key, item in self.items():
