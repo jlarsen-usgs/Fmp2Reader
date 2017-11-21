@@ -38,8 +38,8 @@ farms = fmp.transient_arrays['farms']
 # (nper, nlay, nrow, ncol) nlay = 1 for farm processes.
 
 create_shapefile_from_transient_array(r'C:\mygis\crops.shp', fmp.crop_arrays, 
-									  nper=270, nlay=1, xgrid=xgrid, 
-									  ygrid=ygrid, no_data=0)
+			nper=270, nlay=1, xgrid=xgrid, 
+			ygrid=ygrid, no_data=0)
 create_shapefile_from_transient_array(r'C:\mygis\farms.shp', fmp.transient_arrays, 
 									  nper=270, nlay=1, xgrid=xgrid, 
 									  ygrid=ygrid, no_data=0)
