@@ -126,16 +126,24 @@ class Fmp(dict):
                         'output': ('wel_cbc', 'fnr_cbc', 'isdpfl', 'fds',
                                    'ifbpfl', 'fb_compact.out', 'fb_details',
                                    'et_array', 'et_list.out',
+                                   'routing_information', 'farm_well_cbc',
+                                   'farm_net_recharge_cbc',
+                                   'farm_demand_supply_summary', 'farm_budget',
+                                   'evapotranspiration_summary',
+                                   'farm_net_recharge_array',
+                                   'farm_net_recharge_list',
                                    'routing_information'),
                          'global dimension': ('nfarm', 'ncrop', 'nsoil',
                                               'nirrigate', 'nrow', 'ncol',
                                               'surface_elevation', 'nrd_types'),
-                         'wbs': ('location', 'efficiency',
+                         'wbs': ('location', 'efficiency', 'watersource',
+                                 'efficiency_improvement',
                                  'deficiency_scenario', 'prorate_deficiency',
-                                 'bare_runoff_frac'),
+                                 'bare_runoff_frac', 'bare_runoff_fraction',
+                                 'added_demand_runoff_split'),
                          'fwell': ('qmaxreset', 'nocirnoq', 'print',
-                                   'linefeed'),
-                         'soil': ('soil_id', 'capillary_fringe'),
+                                   'linefeed', 'sfac', 'prorate', 'time'),
+                         'soil': ('soil_id', 'capillary_fringe', 'coeficient'),
                          'climate': ('reference_et', 'precipitation'),
                          'crop': ('print', 'fraction', 'crop_coeficient',
                                   'irrigation', 'root_depth', 'pond_depth',
@@ -143,9 +151,13 @@ class Fmp(dict):
                                   'evaporation_irrigation_fraction',
                                   'surfacewater_loss_fraction_precipitation',
                                   'surfacewater_loss_fraction_irrigation',
-                                  'groundwater_root_interaction'),
+                                  'groundwater_root_interaction',
+                                  'specify_print_all_crops', 'name',
+                                  'relaxation_factor_head_change',
+                                  'min_bare_fraction', 'root_pressure'),
                         'surfacewater': ('non_routed_delivery',
-                                         'semi_routed_return')
+                                         'semi_routed_return',
+                                         'routed_return_any_non_diversion_reach')
                         }
 
     def __init__(self, fmp_name, fmp_ws="", nrow=0, ncol=0, nfarm=0, ncrop=0,
@@ -240,6 +252,7 @@ class Fmp(dict):
         self.__find_input_blocks()
 
         for key, value in self.__block_indexes.items():
+            print("Reading {} block".format(key))
             self[key] = {}
             block_data = self.__input[value[0]:value[1]]
             linefeed = False
@@ -254,7 +267,7 @@ class Fmp(dict):
                     self[key][p_name] = data
 
                 elif t[0].lower() not in Fmp.valid_parameters[key] and ix > skip:
-                    raise AssertionError('Keyword not in valid_parameters')
+                    raise AssertionError('Keyword: {} not in valid_parameters'.format(t[0]))
 
                 elif ix <= skip:
                     pass
@@ -269,6 +282,12 @@ class Fmp(dict):
                     elif len(t) == 1:
                         data = True
                         dtype = 'bool'
+
+                    elif 'external' in (ent.lower() for ent in t):
+                        pass
+
+                    elif key == 'fwell' and t[0].lower() in ('time', 'open/close'):
+                        pass
 
                     elif t[1].lower() == "transient" and\
                             'internal' not in record.lower():
@@ -471,7 +490,8 @@ class Fmp(dict):
 
                 return arr, skip
         else:
-            pass
+            # todo: setup this section to read other internal array types
+            return None, skip
 
     def __list_reader(self, lst, internal=False):
         """
@@ -513,6 +533,7 @@ class Fmp(dict):
         method to create row x col numpy arrays for all data within the
         farm processes.
         """
+        print('Beginning array conversion')
         self.nfarm = self['global dimension']['nfarm']
         self.ncrop = self['global dimension']['ncrop']
         self.nsoil = self['global dimension']['nsoil']
@@ -645,7 +666,6 @@ if __name__ == "__main__":
     fmp = Fmp(fmp_name, fmp_ws=ws, nrow=dis.nrow,
               ncol=dis.ncol, cell_area=area, crop_lut=crop_lut)
     fmp.to_arrays()
-    print('break')
 
     ws = r'C:\Users\jlarsen\Desktop\Lucerne\GIS\V2_NAD83'
     shp_name = "Crop_arrays.shp"
