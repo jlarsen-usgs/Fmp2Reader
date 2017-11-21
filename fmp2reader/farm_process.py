@@ -541,7 +541,7 @@ class Fmp(dict):
         self.nsoil = self['global dimension']['nsoil']
         self.nirrigate = self['global dimension']['nirrigate']
 
-        self.boundary_arrays['soil_id'] = self['soil']['soil_id']['data']
+        # self.boundary_arrays['soil_id'] = self['soil']['soil_id']['data']
 
         t = self['wbs']['location']['data']
         t.shape = (t.shape[0], 1, t.shape[1], t.shape[2])
