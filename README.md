@@ -1,5 +1,6 @@
-# Fmp2Reader
-A tool to read in Modflow OWHM2 farm process files and create shapefiles of input data. 
+# Fmp2Reader version 0.000001
+
+A tool to read in Modflow OWHM2 farm process files and create shapefiles of input data. Tool is incomplete, and needs further development for computational efficiency and keyword updates.
 
 This tool is installed as a python library using pip. Navigate to the trunk directory and use:
 
